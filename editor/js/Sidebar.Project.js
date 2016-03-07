@@ -34,7 +34,7 @@ Sidebar.Project = function ( editor ) {
 
 	var opsRow = new UI.Row();
 	var addBtn = new UI.Button("Add").onClick(function(){
-			addModel();
+			addModelSelf();
 	});
 	opsRow.add(addBtn);
 	container.add(opsRow);
@@ -44,6 +44,50 @@ Sidebar.Project = function ( editor ) {
 		var file = fso.GetFile("models/chaji.DAE");
 
 		editor.loader.loadFile(file);
+	}
+
+	function addModelSelf() {
+		// instantiate a loader
+		editor.loader = new THREE.ColladaLoader();
+
+		editor.loader.load(
+			// resource URL
+			'http://7xrmb9.com1.z0.glb.clouddn.com/15x.DAE',
+			// Function when resource is loaded
+			function ( collada ) {
+				//scene.add( collada.scene );
+				editor.execute( new AddObjectCommand( collada.scene ) );
+			},
+			// Function called when download progresses
+			function ( xhr ) {
+				console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+			}
+		);
+
+
+		editor.loader = new THREE.TextureLoader();
+
+		// load a resource
+		editor.loader.load(
+			// resource URL
+			'http://7xrmb9.com1.z0.glb.clouddn.com/1.jpg',
+			// Function when resource is loaded
+			function ( texture ) {
+				// do something with the texture
+				var material = new THREE.MeshBasicMaterial( {
+					map: texture
+				 } );
+			},
+			// Function called when download progresses
+			function ( xhr ) {
+				console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+			},
+			// Function called when download errors
+			function ( xhr ) {
+				console.log( 'An error happened' );
+			}
+		);
+
 	}
 
 
